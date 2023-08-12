@@ -1,4 +1,11 @@
-import { SET_QUIZ_INTO_STATE, SET_SELECTED_ANSWER, SET_INFO_MESSAGE, MOVE_CLOCKWISE, MOVE_COUNTERCLOCKWISE } from "./action-types"
+import { 
+  SET_QUIZ_INTO_STATE, 
+  SET_SELECTED_ANSWER, 
+  SET_INFO_MESSAGE, 
+  MOVE_CLOCKWISE, 
+  MOVE_COUNTERCLOCKWISE, 
+  RESET_FORM, 
+  INPUT_CHANGE } from "./action-types"
 import axios from "axios";
 
 // ❗ You don't need to add extra action creators to achieve MVP
@@ -10,15 +17,28 @@ export const moveCounterClockwise = () => ({
   type: MOVE_COUNTERCLOCKWISE,
 });
 
-export function selectAnswer() { }
+export const selectAnswer = () => ({
+  type: SET_SELECTED_ANSWER
+ })
 
-export function setMessage() { }
+export const setMessage = () => ({
+  type: SET_INFO_MESSAGE
+ })
 
-export function setQuiz() { }
+export const setQuiz = () => ({
+  type: SET_QUIZ_INTO_STATE
+ })
 
-export function inputChange() { }
+export const inputChange = (fieldName, payload) => ({
+  type: INPUT_CHANGE,
+  fieldName,
+  payload,
+});
 
-export function resetForm() { }
+
+export const resetForm = () => ({
+  type: RESET_FORM
+ })
 
 // ❗ Async action creators
 export function fetchQuiz() {
@@ -60,11 +80,22 @@ export function setSelectedAnswer(answerId) {
 }
 
 
-export function postQuiz() {
+export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
   return function (dispatch) {
+    console.log('postQuiz action creator dispatched');
     // On successful POST:
     // - Dispatch the correct message to the the appropriate state
     // - Dispatch the resetting of the form
+    axios.post('http://localhost:9000/api/quiz/new', { 
+    question_text: questionText, 
+    true_answer_text: trueAnswerText, 
+    false_answer_text: falseAnswerText })
+    .then( res => {
+      console.log('Successful API response:', res.data);
+      dispatch({ type: SET_INFO_MESSAGE, payload: `Congrats: "${questionText}" is a great question!` })
+      dispatch({ type: RESET_FORM })
+    })
+    .catch(err => console.log(err.message));
   }
 }
 // ❗ On promise rejections, use log statements or breakpoints, and put an appropriate error message in state

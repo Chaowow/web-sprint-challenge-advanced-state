@@ -38,7 +38,6 @@ function Quiz(props) {
 
   return (
     <div id="wrapper">
-       <Message message={props.infoMessage} />
       <h2>{quiz.question}</h2>
       <div id="quizAnswers">
         {quiz.answers.map(answer => (
@@ -64,7 +63,6 @@ function Quiz(props) {
 const mapStateToProps = state => ({
   quiz: state.quiz,
   selectedAnswer: state.selectedAnswer,
-  infoMessage: state.infoMessage
 });
 
 const mapDispatchToProps = {
